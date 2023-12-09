@@ -103,4 +103,30 @@ public class AccountTransferProcessor {
 			}
 		}
 	}
+	
+	
+	// Moved Method from AccountManager
+	public double calcCheckingWithdraw(double amount) {
+		setCheckingBalance((getCheckingBalance() - amount));
+		return getCheckingBalance();
+	}
+
+	// Moved Method from AccountManager
+	public double calcCheckingDeposit(double amount) {
+		setCheckingBalance((getCheckingBalance() + amount));
+		return getCheckingBalance();
+	}
+
+	// Moved Method from AccountManager
+	public double calcSavingWithdraw(double amount) {
+		setSavingBalance((getSavingBalance() - amount));
+		return getSavingBalance();
+	}
+
+	// Moved Method from AccountManager
+	public double calcSavingDeposit(double amount) {
+		setSavingBalance((getSavingBalance() + amount));
+		return getSavingBalance();
+	}
+
 }

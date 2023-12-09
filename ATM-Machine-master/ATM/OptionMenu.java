@@ -11,45 +11,59 @@ public class OptionMenu {
 	DecimalFormat moneyFormat = new DecimalFormat("'$'###,##0.00");
 	HashMap<Integer, Account> data = new HashMap<Integer, Account>();
 
-	public void getLogin() throws IOException {
-		boolean end = false;
-		int customerNumber = 0;
-		int pinNumber = 0;
-		while (!end) {
-			try {
-				System.out.print("\nEnter your customer number: ");
-				customerNumber = menuInput.nextInt();
-				System.out.print("\nEnter your PIN number: ");
-				pinNumber = menuInput.nextInt();
-				Iterator it = data.entrySet().iterator();
-				while (it.hasNext()) {
-					Map.Entry pair = (Map.Entry) it.next();
-					Account acc = (Account) pair.getValue();
-					if (data.containsKey(customerNumber) && pinNumber == acc.getPinNumber()) {
-						getAccountType(acc);
-						end = true;
-						break;
-					}
-				}
-				if (!end) {
-					System.out.println("\nWrong Customer Number or Pin Number");
-				}
-			} catch (InputMismatchException e) {
-				System.out.println("\nInvalid Character(s). Only Numbers.");
-			}
-		}
-	}
+
+    public void getLogin() throws IOException {
+        boolean end = false;
+        int customerNumber = 0;
+        int pinNumber = 0;
+
+        while (!end) {
+            try {
+                customerNumber = getCustomerNumberInput();
+                pinNumber = getPinNumberInput();
+                
+                Account acc = findAccount(customerNumber, pinNumber);
+                if (acc != null) {
+                    getAccountType(acc);
+                    end = true;
+                } else {
+                    System.out.println("\nWrong Customer Number or Pin Number");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("\nInvalid Character(s). Only Numbers.");
+            }
+        }
+    }
+	
+    private int getCustomerNumberInput() {
+        System.out.print("\nEnter your customer number: ");
+        return menuInput.nextInt();
+    }
+
+    private int getPinNumberInput() {
+        System.out.print("\nEnter your PIN number: ");
+        return menuInput.nextInt();
+    }
+    
+    private Account findAccount(int customerNumber, int pinNumber) {
+        Iterator it = data.entrySet().iterator();
+
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry) it.next();
+            Account acc = (Account) pair.getValue();
+
+            if (data.containsKey(customerNumber) && pinNumber == acc.getPinNumber()) {
+                return acc;
+            }
+        }
+        return null;
+    }
 
 	public void getAccountType(Account acc) {
 		boolean end = false;
 		while (!end) {
 			try {
-				System.out.println("\nSelect the account you want to access: ");
-				System.out.println(" Type 1 - Checkings Account");
-				System.out.println(" Type 2 - Savings Account");
-				System.out.println(" Type 3 - Exit");
-				System.out.print("\nChoice: ");
-
+				displayAccountOptions();
 				int selection = menuInput.nextInt();
 
 				switch (selection) {
@@ -71,18 +85,21 @@ public class OptionMenu {
 			}
 		}
 	}
+	
+	//New extracted method
+	private void displayAccountOptions() {
+	    System.out.println("\nSelect the account you want to access: ");
+	    System.out.println(" Type 1 - Checkings Account");
+	    System.out.println(" Type 2 - Savings Account");
+	    System.out.println(" Type 3 - Exit");
+	    System.out.print("\nChoice: ");
+	}
 
 	public void getChecking(Account acc) {
 		boolean end = false;
 		while (!end) {
 			try {
-				System.out.println("\nCheckings Account: ");
-				System.out.println(" Type 1 - View Balance");
-				System.out.println(" Type 2 - Withdraw Funds");
-				System.out.println(" Type 3 - Deposit Funds");
-				System.out.println(" Type 4 - Transfer Funds");
-				System.out.println(" Type 5 - Exit");
-				System.out.print("\nChoice: ");
+				displayCheckingsOptions();
 
 				int selection = menuInput.nextInt();
 
@@ -112,18 +129,23 @@ public class OptionMenu {
 			}
 		}
 	}
+	
+	// New extracted Method
+	public void displayCheckingsOptions() {
+		System.out.println("\nCheckings Account: ");
+		System.out.println(" Type 1 - View Balance");
+		System.out.println(" Type 2 - Withdraw Funds");
+		System.out.println(" Type 3 - Deposit Funds");
+		System.out.println(" Type 4 - Transfer Funds");
+		System.out.println(" Type 5 - Exit");
+		System.out.print("\nChoice: ");
+	}
 
 	public void getSaving(Account acc) {
 		boolean end = false;
 		while (!end) {
 			try {
-				System.out.println("\nSavings Account: ");
-				System.out.println(" Type 1 - View Balance");
-				System.out.println(" Type 2 - Withdraw Funds");
-				System.out.println(" Type 3 - Deposit Funds");
-				System.out.println(" Type 4 - Transfer Funds");
-				System.out.println(" Type 5 - Exit");
-				System.out.print("Choice: ");
+				displaySavingOptions();
 				int selection = menuInput.nextInt();
 				switch (selection) {
 				case 1:
@@ -149,6 +171,16 @@ public class OptionMenu {
 				menuInput.next();
 			}
 		}
+	}
+	
+	private void displaySavingOptions() {
+		System.out.println("\nSavings Account: ");
+		System.out.println(" Type 1 - View Balance");
+		System.out.println(" Type 2 - Withdraw Funds");
+		System.out.println(" Type 3 - Deposit Funds");
+		System.out.println(" Type 4 - Transfer Funds");
+		System.out.println(" Type 5 - Exit");
+		System.out.print("Choice: ");
 	}
 
 	public void createAccount() throws IOException {
@@ -194,11 +226,11 @@ public class OptionMenu {
 				switch (choice) {
 				case 1:
 					getLogin();
-					end = true;
+					end=true;
 					break;
 				case 2:
 					createAccount();
-					end = true;
+					end=true;
 					break;
 				default:
 					System.out.println("\nInvalid Choice.");
@@ -212,4 +244,5 @@ public class OptionMenu {
 		menuInput.close();
 		System.exit(0);
 	}
+
 }
